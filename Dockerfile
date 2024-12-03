@@ -8,10 +8,8 @@ ENV TITLE="Clash Verge"
 ADD https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v${VERSION}/Clash.Verge_${VERSION}_${TARGETARCH}.deb /tmp/clash-verge.deb
 
 RUN apt update && \
-    apt install -y --no-install-recommends \
-        libayatana-appindicator3-1 \
-        libwebkit2gtk-4.0-37 && \
-    dpkg -i /tmp/clash-verge.deb && \
+    apt --fix-broken install -y --no-install-recommends \
+        /tmp/clash-verge.deb && \
     apt autoremove -y && \
     apt autoclean -y && \
     apt clean && \
