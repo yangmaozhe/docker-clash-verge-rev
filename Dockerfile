@@ -9,7 +9,7 @@ RUN apt update && \
     apt install -y --no-install-recommends \
         libayatana-appindicator3-1 \
         libwebkit2gtk-4.0-37 && \
-    wget https://github.com/clash-verge-rev/clash-verge-rev/releases/download/$VERSION/Clash.Verge_$(echo "$VERSION" | sed 's/^v//')_$TARGETARCH.deb \
+    wget https://github.com/clash-verge-rev/clash-verge-rev/releases/download/$VERSION/Clash.Verge_$(echo $VERSION | sed 's/^v//')_$TARGETARCH.deb \
         -O /tmp/clash-verge.deb && \
     dpkg -i /tmp/clash-verge.deb && \
     apt autoremove -y && \
