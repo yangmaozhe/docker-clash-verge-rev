@@ -5,7 +5,7 @@ ARG VERSION
 
 ENV TITLE="Clash Verge"
 
-ADD https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v$VERSION/Clash.Verge_$VERSION_$TARGETARCH.deb /tmp/clash-verge.deb
+ADD https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v${VERSION}/Clash.Verge_${VERSION}_${TARGETARCH}.deb /tmp/clash-verge.deb
 
 RUN apt update && \
     apt install -y --no-install-recommends \
