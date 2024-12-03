@@ -1,4 +1,3 @@
 #!/usr/bin/with-contenv bash
 
-exec s6-setuidgid abc \
-  /bin/bash /usr/bin/clash-verge-service
+exec s6-setuidgid abc /usr/bin/clash-verge-service
