@@ -5,12 +5,12 @@ ARG VERSION
 
 ENV TITLE="Clash Verge"
 
+ADD https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v$VERSION/Clash.Verge_$VERSION_$TARGETARCH.deb /tmp/clash-verge.deb
+
 RUN apt update && \
     apt install -y --no-install-recommends \
         libayatana-appindicator3-1 \
         libwebkit2gtk-4.0-37 && \
-    wget https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v$VERSION/Clash.Verge_$VERSION_$TARGETARCH.deb \
-        -O /tmp/clash-verge.deb && \
     dpkg -i /tmp/clash-verge.deb && \
     apt autoremove -y && \
     apt autoclean -y && \
