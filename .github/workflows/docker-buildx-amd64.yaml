@@ -11,7 +11,6 @@ on:
 env:
   REGISTRY: ${{ vars.REGISTRY }}
   IMAGE: ${{ vars.IMAGE }}
-  ARCH: amd64
 
 jobs:
   build-and-push:
@@ -25,16 +24,15 @@ jobs:
     steps:
       - name: 设置环境变量
         run: |
+          echo "GIT_TAG_VERSION=$(echo $GITHUB_REF_NAME | sed 's/^v//')" >> $GITHUB_ENV
           echo "REGISTRY_USERNAME=${{ github.repository_owner }}" >> $GITHUB_ENV
-          echo "VERSION=$(echo $GITHUB_REF_NAME | sed 's/^v//')" >> $GITHUB_ENV
 
       - name: 检查环境变量
         run: |
           echo "REGISTRY:          ${{ env.REGISTRY }}"
-          echo "IMAGE:             ${{ env.IMAGE }}"
           echo "REGISTRY_USERNAME: ${{ env.REGISTRY_USERNAME }}"
-          echo "ARCH:              ${{ env.ARCH }}"
-          echo "VERSION:           ${{ env.VERSION }}"
+          echo "IMAGE:             ${{ env.IMAGE }}"
+          echo "GIT_TAG_VERSION:   ${{ env.GIT_TAG_VERSION }}"
 
       - name: 检出代码
         uses: actions/checkout@v4
@@ -69,12 +67,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: 检查容器元数据
-        run: |
-          echo "docker iamge tags:    ${{ steps.meta.outputs.tags }}"
-          echo "docker iamge labels:  ${{ steps.meta.outputs.labels }}"
-          echo "docker iamge version: ${{ steps.meta.outputs.version }}"
-
       # 缓存 Docker 镜像以加速构建
       - name: 配置容器缓存层
         uses: actions/cache@v4
@@ -93,18 +85,29 @@ jobs:
           username: ${{ env.REGISTRY_USERNAME }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 构建并上传
+      - name: 检查容器元数据
+        run: |
+          echo "docker iamge version: ${{ steps.meta.outputs.version }}"
+          echo ""
+          echo "docker iamge tags:"
+          echo "${{ steps.meta.outputs.tags }}"
+          echo ""
+          echo "docker iamge labels:"
+          echo "${{ steps.meta.outputs.labels }}"
+
       - name: 构建容器并推送注册表
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64
-          push: true
+          platforms: |
+            linux/arm64
+            linux/amd64
+          outputs: type=registry,push=true,compression=gzip,compression-level=9
+          provenance: false
           build-args: |
-            ARCH=${{ env.ARCH }}
-            VERSION=${{ env.VERSION }}
+            VERSION=${{ env.GIT_TAG_VERSION }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-cache
