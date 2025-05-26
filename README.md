@@ -8,7 +8,7 @@
 构建镜像
 ```sh
 docker build \
-    --build-arg TARGETARCH=ard64 \
+    --build-arg TARGETARCH=arm64 \
     --build-arg VERSION=2.2.3 \
     -t clash-verge .
 ```
