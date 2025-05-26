@@ -4,6 +4,19 @@
 
 ## 使用
 
+### 构建和运行
+构建镜像
+```sh
+docker build \
+    --build-arg TARGETARCH=amd64 \
+    --build-arg VERSION=1.0.0 \
+    -t clash-verge .
+```
+- 注意事项
+TARGETARCH 和 VERSION：构建时必须通过 --build-arg 指定这两个参数。
+数据卷：确保将 /path/to/config 替换为实际的本地路径，以持久化 Clash Verge 的配置。
+端口映射：根据实际需求调整端口映射。
+
 ### 通过 docker run 部署
 
 ```sh
